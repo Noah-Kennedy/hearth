@@ -1,4 +1,5 @@
 core_packages:
   pkg.installed:
     - pkgs:
-        - vim
+        - neovim
+        - salt

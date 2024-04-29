@@ -1,2 +1,2 @@
 # hearth
-NixOS homelab 
+The config monorepo for Noah's homelab.

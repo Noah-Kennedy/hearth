@@ -7,6 +7,12 @@ install_base:
         - curl
         - sudo
         - zsh
+        - lshw
+        - ncdu
+        - htop
+        - tmux
+        - btop
+        - software-properties-common
 
 update_packages:
   pkg.uptodate:

@@ -2,3 +2,4 @@ base:
   '*':
     - secrets
     - metals
+    - dns

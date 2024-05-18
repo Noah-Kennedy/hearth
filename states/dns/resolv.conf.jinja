@@ -1,0 +1,8 @@
+{# Localhost followed by cluster primary followed by fallback upstreams #}
+{%- if grains.host != pillar.dns.primary -%}
+    nameserver 127.0.0.1
+{%- endif %}
+nameserver {{ pillar.metals.get(pillar.dns.primary).ip }}
+{% for upstream in pillar.dns.upstreams -%}
+    nameserver {{ upstream.ip }}
+{% endfor -%}

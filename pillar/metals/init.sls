@@ -1,21 +1,21 @@
 metals:
-  - host: alexandria
+  alexandria:
     ip: 192.168.1.85
-  - host: prometheus
+  prometheus:
     ip: 192.168.1.84
-  - host: postgres
+  postgres:
     ip: 192.168.1.83
-  - host: heavy-worker-1
+  heavy-worker-1:
     ip: 192.168.1.82
-  - host: heavy-worker-2
+  heavy-worker-2:
     ip: 192.168.1.81
-  - host: nano-worker-1
+  nano-worker-1:
     ip: 192.168.1.80
-  - host: grafana
+  grafana:
     ip: 192.168.1.79
-  - host: mikrotik-a
+  mikrotik-a:
     ip: 192.168.1.77
-  - host: lazarus
+  lazarus:
     ip: 192.168.1.76
-  - host: openwrt
+  openwrt:
     ip: 192.168.1.67

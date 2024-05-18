@@ -1,21 +1,17 @@
-#/etc/hosts:
-#  file.managed:
-#    - source: salt://dns/hosts
-
-{% if 'alexandria' in grains['host'] %}
-
 coredns_download:
   archive.extracted:
     - name: /usr/local/bin
-    - source: https://github.com/coredns/coredns/releases/download/v1.11.1/coredns_1.11.1_linux_amd64.tgz
-    - source_hash: https://github.com/coredns/coredns/releases/download/v1.11.1/coredns_1.11.1_linux_amd64.tgz.sha256
+    - source: https://github.com/coredns/coredns/releases/download/v1.11.1/coredns_1.11.1_linux_{{ grains.osarch }}.tgz
+    - source_hash: https://github.com/coredns/coredns/releases/download/v1.11.1/coredns_1.11.1_linux_{{ grains.osarch }}.tgz.sha256
     - enforce_toplevel: false
+    - source_hash_update: true
 
 coredns_config:
   file.managed:
     - name: /etc/coredns/Corefile
-    - source: salt://dns/Corefile
+    - source: salt://dns/Corefile.jinja
     - makedirs: true
+    - template: jinja
 
 coredns:
   file.managed:
@@ -25,10 +21,8 @@ coredns:
     - enable: true
     - watch:
         - file: /etc/coredns/Corefile
-#        - file: /etc/hosts
-
-{% endif %}
 
 /etc/resolv.conf:
   file.managed:
-    - source: salt://dns/resolv.conf
+    - source: salt://dns/resolv.conf.jinja
+    - template: jinja

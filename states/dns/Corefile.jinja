@@ -1,0 +1,23 @@
+. {
+    hosts {
+        {% for node in pillar.metals -%}
+            {{ pillar.metals.get(node).ip }} {{ node }}
+        {% endfor -%}
+
+        fallthrough
+    }
+
+
+
+    forward . {% if grains.host != pillar.dns.primary -%} {{ pillar.dns.primary }} {% endif -%} {% for upstream in pillar.dns.upstreams -%} {%- if upstream.tls -%} tls:// {%- endif -%} {{ upstream.ip }} {% endfor -%} {
+        tls_servername {{ pillar.dns.upstream_tls }}
+        policy sequential
+        health_check 5s
+    }
+
+    prometheus {{ pillar.metals.get(grains.host).ip }}:9153
+    errors
+    {%- if grains.host == pillar.dns.primary %}
+    cache
+    {%- endif %}
+}

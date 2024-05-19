@@ -9,4 +9,4 @@ prometheus-node-exporter:
     - enable: true
     - reload: true
     - watch:
-      - pkg: prometheus-node-exporter
+        - pkg: prometheus-node-exporter

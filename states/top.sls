@@ -1,7 +1,7 @@
 base:
   '*':
     - core.base
-    - core.prometheus
+    - prometheus
     - dns
 
   'roles:storage':

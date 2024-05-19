@@ -7,7 +7,7 @@
         fallthrough
     }
 
-    forward . {% if grains.host != pillar.dns.primary -%} {{ pillar.dns.primary }} {% endif -%} {% for upstream in pillar.dns.upstreams -%} {%- if upstream.tls -%} tls:// {%- endif -%} {{ upstream.ip }} {% endfor -%} {
+    forward . {% if grains.host != pillar.dns.primary -%} {{ pillar.metals.get(pillar.dns.primary).ip }} {% endif -%} {% for upstream in pillar.dns.upstreams -%} {%- if upstream.tls -%} tls:// {%- endif -%} {{ upstream.ip }} {% endfor -%} {
         tls_servername {{ pillar.dns.upstream_tls }}
         policy sequential
         health_check 5s

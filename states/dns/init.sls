@@ -4,7 +4,6 @@ coredns_download:
     - source: https://github.com/coredns/coredns/releases/download/v1.11.1/coredns_1.11.1_linux_{{ grains.osarch }}.tgz
     - source_hash: https://github.com/coredns/coredns/releases/download/v1.11.1/coredns_1.11.1_linux_{{ grains.osarch }}.tgz.sha256
     - enforce_toplevel: false
-    - source_hash_update: true
 
 coredns_config:
   file.managed:

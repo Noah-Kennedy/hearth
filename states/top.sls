@@ -7,6 +7,7 @@ base:
   'roles:storage':
     - match: grain
     - storage
+    - redis
 #    - vector
 
   'roles:valheim':

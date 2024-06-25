@@ -13,6 +13,9 @@ install_base:
         - tmux
         - btop
         - software-properties-common
+        - python3-gnupg
+        - gpg
+        - apt-transport-https
 
 update_packages:
   pkg.uptodate:

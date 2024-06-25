@@ -3,10 +3,11 @@ base:
     - core.base
     - prometheus
     - dns
+    - grafana
 
   'roles:storage':
     - match: grain
-    - storage
+    - postgres
     - redis
 #    - vector
 

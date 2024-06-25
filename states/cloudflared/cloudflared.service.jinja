@@ -1,0 +1,13 @@
+[Unit]
+Description=cloudflared
+After=network.target
+
+[Service]
+TimeoutStartSec=0
+Type=notify
+ExecStart=/usr/local/bin/cloudflared --no-autoupdate --config /etc/cloudflared/config.yaml tunnel --metrics {{ pillar.metals.get(grains.host).ip }}:60123 run {{ pillar.metals.get(grains.host).cloudflared }}
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target

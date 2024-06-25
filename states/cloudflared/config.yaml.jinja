@@ -1,0 +1,9 @@
+tunnel: {{ pillar.secrets.cloudflared.tunnels.get(grains.host).tunnel }}
+credentials-file: /etc/cloudflared/credentials.json
+
+ingress:
+  - hostname: grafana.nkcompute.net
+    service: http://{{ pillar.metals.get(grains.host).ip }}:3000
+  - hostname: {{ grains.host }}-ssh.nkcompute.net
+    service: ssh://{{ pillar.metals.get(grains.host).ip }}:22
+  - service: http_status:404

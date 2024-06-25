@@ -1,6 +1,7 @@
 metals:
   alexandria:
     ip: 192.168.1.85
+    cloudflared: alexandria
   prometheus:
     ip: 192.168.1.84
   postgres:

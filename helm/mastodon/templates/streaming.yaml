@@ -1,0 +1,72 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mastodon-streaming
+  name: mastodon-streaming
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mastodon-streaming
+  template:
+    metadata:
+      labels:
+        app: mastodon-streaming
+    spec:
+      containers:
+        - image: ghcr.io/mastodon/mastodon:v4.2.12
+          name: mastodon-streaming
+          command:
+            - node
+            - ./streaming/index.js
+          envFrom:
+            - secretRef:
+                name: mastodon-server
+            - secretRef:
+                name: mastodon-vapid
+            - secretRef:
+                name: mastodon-db
+            - secretRef:
+                name: mastodon-redis
+            - secretRef:
+                name: mastodon-s3
+            - secretRef:
+                name: mastodon-smtp
+          ports:
+            - containerPort: 4000
+              name: http-streaming
+              protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /api/v1/streaming/health
+              port: 4000
+              scheme: HTTP
+            initialDelaySeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 2
+          resources:
+            limits:
+              cpu: 50m
+              memory: 128Mi
+            requests:
+              cpu: 25m
+              memory: 64Mi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mastodon-streaming
+spec:
+  ports:
+    - port: 4000
+      protocol: TCP
+      targetPort: http-streaming
+      nodePort: 30008
+  selector:
+    app: mastodon-streaming
+  sessionAffinity: None
+  type: NodePort

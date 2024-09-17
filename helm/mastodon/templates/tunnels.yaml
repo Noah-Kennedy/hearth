@@ -1,0 +1,77 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mastodon-ingress-tunnel
+spec:
+  selector:
+    matchLabels:
+      app: mastodon-ingress-tunnel
+      role: cloudflared
+  replicas: 2
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "2000"
+        prometheus.io/path: "/metrics"
+      labels:
+        app: mastodon-ingress-tunnel
+        role: cloudflared
+    spec:
+      containers:
+        - name: cloudflared
+          image: cloudflare/cloudflared:2024.9.1
+          args:
+            - tunnel
+            - --config
+            - /etc/cloudflared/config/config.yaml
+            - run
+          livenessProbe:
+            httpGet:
+              path: /ready
+              port: 2000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:
+            limits:
+              cpu: 400m
+              memory: 200Mi
+            requests:
+              cpu: 200m
+              memory: 100Mi
+          volumeMounts:
+            - name: config
+              mountPath: /etc/cloudflared/config
+              readOnly: true
+            - name: creds
+              mountPath: /etc/cloudflared/creds
+              readOnly: true
+      volumes:
+        - name: creds
+          secret:
+            secretName: mastodon-ingress-tunnel-credentials
+        - name: config
+          configMap:
+            name: mastodon-ingress-tunnel
+            items:
+              - key: config.yaml
+                path: config.yaml
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mastodon-ingress-tunnel
+data:
+  config.yaml: |
+    tunnel: mastodon-ingress
+    credentials-file: /etc/cloudflared/creds/credentials.json
+    metrics: 0.0.0.0:2000
+    no-autoupdate: true
+    ingress:
+      - hostname: mastodon.despise.computer
+        service: https://mastodon-nginx:443
+        originRequest:
+          originServerName: mastodon.despise.computer
+      - service: http_status:404

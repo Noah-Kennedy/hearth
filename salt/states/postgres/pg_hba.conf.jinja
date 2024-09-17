@@ -88,6 +88,7 @@
 #
 # Database administrative login by Unix domain socket
 local   all             postgres                                peer
+local   all             mastodon                                peer
 
 # TYPE  DATABASE        USER            ADDRESS                 METHOD
 
@@ -95,7 +96,8 @@ local   all             postgres                                peer
 local   all             all                                     peer
 # IPv4 local connections:
 host    all             all             127.0.0.1/32            scram-sha-256
-host    all             all             192.168.1.0/24          scram-sha-256
+host    all             all             192.168.1.0/16          scram-sha-256
+
 # IPv6 local connections:
 host    all             all             ::1/128                 scram-sha-256
 # Allow replication connections from localhost, by a user with the

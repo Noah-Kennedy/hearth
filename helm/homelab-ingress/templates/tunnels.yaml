@@ -1,0 +1,77 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homelab-ingress-tunnel
+spec:
+  selector:
+    matchLabels:
+      app: homelab-ingress-tunnel
+      role: cloudflared
+  replicas: 2
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "2000"
+        prometheus.io/path: "/metrics"
+      labels:
+        app: homelab-ingress-tunnel
+        role: cloudflared
+    spec:
+      containers:
+        - name: cloudflared
+          image: cloudflare/cloudflared:2024.9.1
+          args:
+            - tunnel
+            - --config
+            - /etc/cloudflared/config/config.yaml
+            - run
+          livenessProbe:
+            httpGet:
+              path: /ready
+              port: 2000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:
+            limits:
+              cpu: 100m
+              memory: 256Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+          volumeMounts:
+            - name: config
+              mountPath: /etc/cloudflared/config
+              readOnly: true
+            - name: creds
+              mountPath: /etc/cloudflared/creds
+              readOnly: true
+      volumes:
+        - name: creds
+          secret:
+            secretName: homelab-ingress-tunnel-credentials
+        - name: config
+          configMap:
+            name: homelab-ingress-tunnel
+            items:
+              - key: config.yaml
+                path: config.yaml
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: homelab-ingress-tunnel
+data:
+  config.yaml: |
+    tunnel: homelab-ingress
+    credentials-file: /etc/cloudflared/creds/credentials.json
+    metrics: 0.0.0.0:2000
+    no-autoupdate: true
+    ingress:
+      - hostname: grafana.nkcompute.net
+        service: http://grafana.grafana.svc.cluster.local:3000
+      - hostname: openwrt.nkcompute.net
+        service: http://openwrt.lan:80
+      - service: http_status:404

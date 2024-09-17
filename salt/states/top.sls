@@ -2,8 +2,6 @@ base:
   '*':
     - core.base
     - prometheus
-    - dns
-    - grafana
     {%- if pillar.metals.get(grains.host).cloudflared is defined %}
     - cloudflared
     {%- endif %}
@@ -12,7 +10,10 @@ base:
     - match: grain
     - postgres
     - redis
-#    - vector
+    - dns
+    {%- if grains.cpuarch == 'x86_64' %}
+    - grafana
+    {%- endif %}
 
   'roles:valheim':
     - match: grain

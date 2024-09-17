@@ -1,0 +1,57 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mastodon-sidekiq
+  name: mastodon-sidekiq
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mastodon-sidekiq
+  template:
+    metadata:
+      labels:
+        app: mastodon-sidekiq
+    spec:
+      containers:
+        - image: ghcr.io/mastodon/mastodon:v4.2.12
+          name: mastodon-sidekiq
+          command:
+            - bundle
+            - exec
+            - sidekiq
+          envFrom:
+            - secretRef:
+                name: mastodon-server
+            - secretRef:
+                name: mastodon-vapid
+            - secretRef:
+                name: mastodon-db
+            - secretRef:
+                name: mastodon-redis
+            - secretRef:
+                name: mastodon-s3
+            - secretRef:
+                name: mastodon-smtp
+          readinessProbe:
+            failureThreshold: 3
+            exec:
+              command:
+                - sh
+                - -c
+                - >-
+                  ps aux |
+                  grep '[s]idekiq\ 6'
+                  || false
+            initialDelaySeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 2
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 1536Mi
+            requests:
+              cpu: 500m
+              memory: 768Mi

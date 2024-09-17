@@ -1,0 +1,101 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mastodon-nginx
+  name: mastodon-nginx
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mastodon-nginx
+  template:
+    metadata:
+      labels:
+        app: mastodon-nginx
+    spec:
+      containers:
+        - image: nginx:1.27-bookworm
+          name: mastodon-nginx
+          ports:
+            - containerPort: 80
+              name: http-web
+              protocol: TCP
+            - containerPort: 443
+              name: https-web
+              protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /nginx-health
+              httpHeaders:
+                - name: Host
+                  value: mastodon.despise.computer
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 3
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 2
+          resources:
+            limits:
+              cpu: 200m
+              memory: 64Mi
+            requests:
+              cpu: 100m
+              memory: 32Mi
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+              readOnly: true
+            - name: nginx-mastodon-config
+              mountPath: /etc/nginx/sites-enabled/mastodon
+              subPath: mastodon.conf
+              readOnly: true
+            - name: creds
+              mountPath: /etc/proxy-certs/
+              readOnly: true
+            - name: cache
+              mountPath: /var/cache/nginx
+              readOnly: false
+
+      volumes:
+        - name: creds
+          secret:
+            secretName: mastodon-nginx-cert
+            items:
+              - key: cert
+                path: cert.pem
+              - key: key
+                path: key.pem
+        - name: nginx-config
+          configMap:
+            name: mastodon-nginx
+        - name: nginx-mastodon-config
+          configMap:
+            name: mastodon-nginx-inner
+        - name: cache
+          emptyDir:
+            sizeLimit: 1Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mastodon-nginx
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: http-web
+      name: http-web
+    - port: 443
+      protocol: TCP
+      targetPort: https-web
+      name: https-web
+  selector:
+    app: mastodon-nginx
+  sessionAffinity: None
+  type: LoadBalancer

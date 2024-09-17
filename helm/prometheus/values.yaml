@@ -1,0 +1,38 @@
+server:
+  persistentVolume:
+    enabled: false
+
+  emptyDir:
+    sizeLimit: 1Gi
+
+  service:
+    ## If false, no Service will be created for the Prometheus server
+    ##
+    enabled: true
+
+    ## List of IP addresses at which the Prometheus server service is available
+    ## Ref: https://kubernetes.io/docs/concepts/services-networking/service/#external-ips
+    ##
+    externalIPs: []
+
+    servicePort: 80
+    type: NodePort
+
+    ## Additional port to define in the Service
+    additionalPorts:
+      - name: external
+        port: 80
+        targetPort: 80
+        nodePort: 30090
+
+## alertmanager sub-chart configurable values
+## Please see https://github.com/prometheus-community/helm-charts/tree/main/charts/alertmanager
+##
+alertmanager:
+  enabled: false
+
+## prometheus-node-exporter sub-chart configurable values
+## Please see https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-node-exporter
+##
+prometheus-node-exporter:
+  enabled: false

@@ -19,6 +19,14 @@ spec:
         app: homelab-ingress-tunnel
         role: cloudflared
     spec:
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          nodeTaintsPolicy: Honor
+          labelSelector:
+            matchLabels:
+              app: homelab-ingress-tunnel
       containers:
         - name: cloudflared
           image: cloudflare/cloudflared:2024.9.1
@@ -35,10 +43,10 @@ spec:
             periodSeconds: 10
           resources:
             limits:
-              cpu: 100m
-              memory: 256Mi
+              cpu: 45m
+              memory: 96Mi
             requests:
-              cpu: 50m
+              cpu: 30m
               memory: 64Mi
           volumeMounts:
             - name: config

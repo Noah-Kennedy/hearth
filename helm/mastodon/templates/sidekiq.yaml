@@ -15,6 +15,14 @@ spec:
       labels:
         app: mastodon-sidekiq
     spec:
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          nodeTaintsPolicy: Honor
+          labelSelector:
+            matchLabels:
+              app: mastodon-sidekiq
       containers:
         - image: ghcr.io/mastodon/mastodon:v4.2.12
           name: mastodon-sidekiq
@@ -50,8 +58,8 @@ spec:
             timeoutSeconds: 2
           resources:
             limits:
-              cpu: 1000m
+              cpu: 2000m
               memory: 1536Mi
             requests:
-              cpu: 500m
-              memory: 768Mi
+              cpu: 100m
+              memory: 1024Mi

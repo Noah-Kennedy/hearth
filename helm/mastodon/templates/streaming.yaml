@@ -15,6 +15,14 @@ spec:
       labels:
         app: mastodon-streaming
     spec:
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          nodeTaintsPolicy: Honor
+          labelSelector:
+            matchLabels:
+              app: mastodon-streaming
       containers:
         - image: ghcr.io/mastodon/mastodon:v4.2.12
           name: mastodon-streaming
@@ -49,11 +57,11 @@ spec:
             timeoutSeconds: 2
           resources:
             limits:
-              cpu: 50m
-              memory: 128Mi
+              cpu: 30m
+              memory: 144Mi
             requests:
-              cpu: 25m
-              memory: 64Mi
+              cpu: 20m
+              memory: 96Mi
 
 ---
 apiVersion: v1
@@ -65,8 +73,7 @@ spec:
     - port: 4000
       protocol: TCP
       targetPort: http-streaming
-      nodePort: 30008
   selector:
     app: mastodon-streaming
   sessionAffinity: None
-  type: NodePort
+  type: LoadBalancer

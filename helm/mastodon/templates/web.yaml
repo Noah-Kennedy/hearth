@@ -6,7 +6,7 @@ metadata:
     app: mastodon-web
   name: mastodon-web
 spec:
-  replicas: 4
+  replicas: 2
   selector:
     matchLabels:
       app: mastodon-web
@@ -15,6 +15,14 @@ spec:
       labels:
         app: mastodon-web
     spec:
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          nodeTaintsPolicy: Honor
+          labelSelector:
+            matchLabels:
+              app: mastodon-web
       containers:
         - image: ghcr.io/mastodon/mastodon:v4.2.12
           name: mastodon-web
@@ -52,11 +60,11 @@ spec:
             timeoutSeconds: 2
           resources:
             limits:
-              cpu: 500m
-              memory: 2Gi
+              cpu: 750m
+              memory: 1536Mi
             requests:
-              cpu: 250m
-              memory: 768Mi
+              cpu: 500m
+              memory: 1024Mi
 
 ---
 apiVersion: v1
@@ -68,8 +76,7 @@ spec:
     - port: 3000
       protocol: TCP
       targetPort: http-web
-      nodePort: 30007
   selector:
     app: mastodon-web
   sessionAffinity: None
-  type: NodePort
+  type: LoadBalancer

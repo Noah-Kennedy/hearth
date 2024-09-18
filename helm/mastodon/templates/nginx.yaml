@@ -15,6 +15,14 @@ spec:
       labels:
         app: mastodon-nginx
     spec:
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          nodeTaintsPolicy: Honor
+          labelSelector:
+            matchLabels:
+              app: mastodon-nginx
       containers:
         - image: nginx:1.27-bookworm
           name: mastodon-nginx
@@ -40,10 +48,10 @@ spec:
             timeoutSeconds: 2
           resources:
             limits:
-              cpu: 200m
-              memory: 64Mi
+              cpu: 275m
+              memory: 48Mi
             requests:
-              cpu: 100m
+              cpu: 150m
               memory: 32Mi
           volumeMounts:
             - name: nginx-config

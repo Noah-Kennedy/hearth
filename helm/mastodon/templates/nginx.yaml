@@ -48,10 +48,10 @@ spec:
             timeoutSeconds: 2
           resources:
             limits:
-              cpu: 275m
+              cpu: 300m
               memory: 48Mi
             requests:
-              cpu: 150m
+              cpu: 200m
               memory: 32Mi
           volumeMounts:
             - name: nginx-config
@@ -155,6 +155,7 @@ data:
     }
 
     upstream streaming {
+        least_conn;
         server mastodon-streaming:4000 fail_timeout=0;
     }
 

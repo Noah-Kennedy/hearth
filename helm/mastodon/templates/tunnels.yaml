@@ -8,7 +8,7 @@ spec:
     matchLabels:
       app: mastodon-ingress-tunnel
       role: cloudflared
-  replicas: 2
+  replicas: 3
   template:
     metadata:
       annotations:
@@ -43,8 +43,8 @@ spec:
             periodSeconds: 10
           resources:
             limits:
-              cpu: 450m
-              memory: 96Mi
+              cpu: 1200m
+              memory: 128Mi
             requests:
               cpu: 300m
               memory: 64Mi

@@ -6,7 +6,7 @@ metadata:
     app: mastodon-streaming
   name: mastodon-streaming
 spec:
-  replicas: 2
+  replicas: 3
   selector:
     matchLabels:
       app: mastodon-streaming
@@ -57,8 +57,8 @@ spec:
             timeoutSeconds: 2
           resources:
             limits:
-              cpu: 30m
-              memory: 144Mi
+              cpu: 200m
+              memory: 192Mi
             requests:
               cpu: 20m
               memory: 96Mi

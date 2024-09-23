@@ -6,7 +6,7 @@ metadata:
     app: grafana
   name: grafana
 spec:
-  replicas: 2
+  replicas: 3
   selector:
     matchLabels:
       app: grafana
@@ -50,10 +50,10 @@ spec:
             timeoutSeconds: 2
           resources:
             limits:
-              cpu: 750m
-              memory: 288Mi
+              cpu: 2000m
+              memory: 384Mi
             requests:
-              cpu: 500m
+              cpu: 200m
               memory: 192Mi
           volumeMounts:
             - mountPath: /etc/grafana

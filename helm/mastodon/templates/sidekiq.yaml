@@ -6,7 +6,7 @@ metadata:
     app: mastodon-sidekiq
   name: mastodon-sidekiq
 spec:
-  replicas: 2
+  replicas: 3
   selector:
     matchLabels:
       app: mastodon-sidekiq
@@ -59,7 +59,7 @@ spec:
           resources:
             limits:
               cpu: 2000m
-              memory: 1536Mi
+              memory: 2Gi
             requests:
               cpu: 100m
-              memory: 1024Mi
+              memory: 1Gi

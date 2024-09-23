@@ -8,7 +8,7 @@ spec:
     matchLabels:
       app: homelab-ingress-tunnel
       role: cloudflared
-  replicas: 2
+  replicas: 3
   template:
     metadata:
       annotations:
@@ -43,10 +43,10 @@ spec:
             periodSeconds: 10
           resources:
             limits:
-              cpu: 45m
-              memory: 96Mi
+              cpu: 500m
+              memory: 128Mi
             requests:
-              cpu: 30m
+              cpu: 100m
               memory: 64Mi
           volumeMounts:
             - name: config

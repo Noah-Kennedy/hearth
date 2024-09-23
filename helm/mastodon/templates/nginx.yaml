@@ -6,7 +6,7 @@ metadata:
     app: mastodon-nginx
   name: mastodon-nginx
 spec:
-  replicas: 2
+  replicas: 3
   selector:
     matchLabels:
       app: mastodon-nginx
@@ -49,9 +49,9 @@ spec:
           resources:
             limits:
               cpu: 300m
-              memory: 48Mi
+              memory: 128Mi
             requests:
-              cpu: 200m
+              cpu: 150m
               memory: 32Mi
           volumeMounts:
             - name: nginx-config

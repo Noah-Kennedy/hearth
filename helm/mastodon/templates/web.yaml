@@ -6,7 +6,7 @@ metadata:
     app: mastodon-web
   name: mastodon-web
 spec:
-  replicas: 2
+  replicas: 3
   selector:
     matchLabels:
       app: mastodon-web
@@ -60,11 +60,11 @@ spec:
             timeoutSeconds: 2
           resources:
             limits:
-              cpu: 750m
+              cpu: 1000m
               memory: 1536Mi
             requests:
               cpu: 500m
-              memory: 1024Mi
+              memory: 768Mi
 
 ---
 apiVersion: v1
